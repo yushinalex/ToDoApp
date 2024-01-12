@@ -88,6 +88,7 @@ export default class App extends Component {
     if (status === 'completed') {
       return arr.filter((item) => item.status === 'completed');
     }
+    return arr;
   }
 
   filterItemsStatus = (status) => {
