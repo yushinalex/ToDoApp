@@ -58,7 +58,7 @@
     "prettier": "3.1.1"
   },
   "lint-staged": {
-    "src/*.js": [
+    "*.js": [
       "npm run lint:fix",
       "npm run format",
       "git add"
