@@ -1,85 +1,75 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './new-task-form.css';
 import PropTypes from 'prop-types';
 
-export default class NewTaskForm extends Component {
-  state = {
-    label: '',
-    min: '',
-    sec: '',
+function NewTaskForm(props) {
+  const [label, setLabel] = useState('');
+  const [min, setMin] = useState('');
+  const [sec, setSec] = useState('');
+
+  const onLabelChange = (e) => {
+    setLabel(e.target.value);
   };
 
-  static defaultProps = {
-    onAdd: () => {},
+  const onMinChange = (e) => {
+    setMin(e.target.value);
   };
 
-  static propTypes = {
-    onAdd: PropTypes.func,
+  const onSecChange = (e) => {
+    setSec(e.target.value);
   };
 
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    });
-  };
-
-  onMinChange = (e) => {
-    this.setState({
-      min: e.target.value,
-    });
-  };
-
-  onSecChange = (e) => {
-    this.setState({
-      sec: e.target.value,
-    });
-  };
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    this.props.onAdd(this.state.label, this.state.min, this.state.sec);
-    this.setState({
-      label: '',
-      min: '',
-      sec: '',
-    });
+    props.onAdd(label, min, sec);
+    setLabel('');
+    setMin('');
+    setSec('');
   };
 
-  render() {
-    return (
-      <form className="new-todo-form" onSubmit={this.onSubmit}>
-        <input
-          className="new-todo"
-          placeholder="What needs to be done?"
-          autoFocus
-          required
-          onChange={this.onLabelChange}
-          value={this.state.label}
-          type="text"
-        />
-        <input
-          className="new-todo-form__timer"
-          placeholder="Min"
-          required
-          onChange={this.onMinChange}
-          value={this.state.min}
-          type="number"
-          min="0"
-          max="59"
-        />
-        <input
-          className="new-todo-form__timer"
-          placeholder="Sec"
-          required
-          onChange={this.onSecChange}
-          value={this.state.sec}
-          type="number"
-          min="0"
-          max="59"
-        />
-        <button type="submit" className="new-todo-form__button" />
-      </form>
-    );
-  }
+  return (
+    <form className="new-todo-form" onSubmit={onSubmit}>
+      <input
+        className="new-todo"
+        placeholder="What needs to be done?"
+        autoFocus
+        required
+        onChange={onLabelChange}
+        value={label}
+        type="text"
+      />
+      <input
+        className="new-todo-form__timer"
+        placeholder="Min"
+        required
+        onChange={onMinChange}
+        value={min}
+        type="number"
+        min="0"
+        max="59"
+      />
+      <input
+        className="new-todo-form__timer"
+        placeholder="Sec"
+        required
+        onChange={onSecChange}
+        value={sec}
+        type="number"
+        min="0"
+        max="59"
+      />
+      <button type="submit" className="new-todo-form__button" />
+    </form>
+  );
 }
+
+export default NewTaskForm;
+
+NewTaskForm.defaultProps = {
+  onAdd: () => {},
+};
+
+NewTaskForm.propTypes = {
+  onAdd: PropTypes.func,
+};
