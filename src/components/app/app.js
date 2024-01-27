@@ -166,6 +166,7 @@ export default class App extends Component {
 
   stopTimer = (id) => {
     clearInterval(this.timers[id]);
+    this.timers[id] = null;
   };
 
   render() {
