@@ -5,7 +5,7 @@ import Task from '../task';
 
 import './tasks-list.css';
 
-function TaskList({ toDoArray, onDeleted, onToggleStatus, editStatus, onEdit }) {
+function TaskList({ toDoArray, onDeleted, onToggleStatus, editStatus, onEdit, runTimer, stopTimer }) {
   const elements = toDoArray.map((item) => {
     const { id, ...props } = item;
     return (
@@ -16,6 +16,8 @@ function TaskList({ toDoArray, onDeleted, onToggleStatus, editStatus, onEdit }) 
         onToggleStatus={() => onToggleStatus(id)}
         editStatus={() => editStatus(id)}
         onEdit={(text) => onEdit(id, text)}
+        runTimer={() => runTimer(id)}
+        stopTimer={() => stopTimer(id)}
       />
     );
   });

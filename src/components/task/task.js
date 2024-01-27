@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
 import './task.css';
 import PropTypes from 'prop-types';
@@ -40,16 +41,33 @@ export default class Task extends Component {
   };
 
   render() {
-    const { label, time, onDeleted, onToggleStatus, status, editStatus } = this.props;
+    const { label, time, onDeleted, onToggleStatus, status, editStatus, timeLeft, runTimer, stopTimer } = this.props;
     const isChecked = status === 'completed';
+
+    const minutes = Math.floor(timeLeft / 60)
+      .toString()
+      .padStart(2, '0');
+
+    const seconds = (timeLeft - minutes * 60).toString().padStart(2, '0');
 
     return (
       <li className={status}>
         <div className="view">
           <input className="toggle" type="checkbox" onChange={onToggleStatus} id={label} checked={isChecked} />
           <label htmlFor={label}>
-            <span className="description">{label}</span>
-            <span className="created">{`created ${formatDistanceToNow(time, { includeSeconds: true })} ago`}</span>
+            <span className="tittle">{label}</span>
+            <span className="description">
+              <button type="submit" onClick={runTimer} className="icon icon-play" />
+              <button type="submit" onClick={stopTimer} className="icon icon-pause" />
+              <span className="time-left">
+                <span>{minutes}</span>
+                <span>:</span>
+                <span>{seconds}</span>
+              </span>
+            </span>
+            <span className="description time-created">{`created ${formatDistanceToNow(time, {
+              includeSeconds: true,
+            })} ago`}</span>
           </label>
           <button type="button" aria-label="edit" className="icon icon-edit" onClick={editStatus} />
           <button type="button" aria-label="delete" className="icon icon-destroy" onClick={onDeleted} />

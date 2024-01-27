@@ -10,16 +10,19 @@ export default class App extends Component {
   newId = 1;
 
   state = {
-    toDoData: [this.createItem('Completed task'), this.createItem('Editing task'), this.createItem('Active task')],
+    toDoData: [this.createItem('Active task', 90)],
     filterStatus: 'all',
   };
 
-  createItem(label) {
+  timers = {};
+
+  createItem(label, timeLeft) {
     return {
       label,
       time: Date.now(),
       status: 'active',
       id: this.newId++,
+      timeLeft,
     };
   }
 
@@ -52,12 +55,14 @@ export default class App extends Component {
     }));
   };
 
-  addItem = (text) => {
+  addItem = (text, min, sec) => {
     if (!text) {
       return;
     }
 
-    const newTask = this.createItem(text);
+    const timeLeft = Number(min) * 60 + Number(sec);
+
+    const newTask = this.createItem(text, timeLeft);
 
     this.setState(({ toDoData }) => {
       const newArray = [...toDoData, newTask];
@@ -127,6 +132,42 @@ export default class App extends Component {
     });
   };
 
+  runTimer = (id) => {
+    const idx = this.state.toDoData.findIndex((item) => item.id === id);
+    const tsk = this.state.toDoData[idx];
+    if (!tsk.timeLeft) {
+      return;
+    }
+    if (!this.timers[id]) {
+      this.timers[id] = setInterval(() => {
+        this.setState(({ toDoData }) => {
+          const index = toDoData.findIndex((item) => item.id === id);
+          const task = toDoData[index];
+          if (index === -1) {
+            clearInterval(this.timers[id]);
+            return {
+              toDoData,
+            };
+          }
+          const timeLeft = task.timeLeft - 1;
+          if (!timeLeft) {
+            clearInterval(this.timers[id]);
+          }
+          const newTask = { ...task, timeLeft };
+          const newArray = [...toDoData.slice(0, index), newTask, ...toDoData.slice(index + 1)];
+
+          return {
+            toDoData: newArray,
+          };
+        });
+      }, 1000);
+    }
+  };
+
+  stopTimer = (id) => {
+    clearInterval(this.timers[id]);
+  };
+
   render() {
     const { toDoData, filterStatus } = this.state;
     const toDoCount = toDoData.filter((item) => item.status !== 'completed').length;
@@ -143,6 +184,8 @@ export default class App extends Component {
             onToggleStatus={this.toggleStatus}
             editStatus={this.editStatus}
             onEdit={this.editItem}
+            runTimer={this.runTimer}
+            stopTimer={this.stopTimer}
           />
           <Footer
             toDo={toDoCount}
